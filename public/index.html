@@ -9,19 +9,200 @@
     <link rel="stylesheet" media="all" href="http://toutiao.io/assets/application-541769b6fe26a9ebf515891ba4fedfbe.css" />
     <script src="//cdn.bootcss.com/jquery/2.2.0/jquery.min.js"></script>
 </head>
+<style type="text/css">
+.loadmore {
+    display: inline-block;
+    width: 60%;
+    background: #eee;
+    padding: 5px 12px;
+    text-align: center;
+    margin: 80px 20% 0px;
+    letter-spacing: 3px;
+    color: #666;
+    display: none;
+}
+
+.returnTop {
+    display: none;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    background: url("http://static1.tuicool.com/images/return_bg.png") no-repeat 0 -50px;
+}
+.container-fluid{
+	padding: 0 21%;
+}
+</style>
 
 <body>
-	<div class="container" id="daily"></div>
+    <nav class="navbar navbar-default navbar-fixed-top custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+			       开发者头条
+			    </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container" id="daily" style="margin-top: 48px;"></div>
+    <div class="loadmore">正在加载中...</div>
+    <div class="returnTop" title="返回顶部" style="right:200px;"></div>
 </body>
 <script type="text/javascript">
-	
-	$.ajax({
-		type:"get",
-		url:"http://localhost:1337/news",
-		success:function(msg){
-			//console.log(msg)
-			$(".container").append(msg)
-		}
-	})
+function timeFormat() {
+    var time = new Date();
+    var year = time.getFullYear();
+    var month = time.getMonth() + 1;
+    var day = time.getDate();
+
+    var date = year + "-" + month + "-" + day;
+    return date;
+}
+
+var date = timeFormat();
+
+function getYesterday(date) {
+    //date形式  '2016-5-19'
+    //特殊情形 '2016-1-1'
+
+    var dateArr = date.split('-');
+    var year = dateArr[0],
+        month = dateArr[1],
+        day = dateArr[2];
+
+    if (month == 1 && day == 1) {
+        //表示一年的第一天
+        //不考虑2000-01-01
+        year -= 1;
+        month = 12;
+        var days = new Date(year, month, 0);
+        day = days.getDate();
+        date = year + '-' + month + '-' + day;
+        return date;
+    } else if (month != 1 && day == 1) {
+        //表示一月的第一天
+        month -= 1;
+        var days = new Date(year, month, 0);
+        day = days.getDate();
+        date = year + '-' + month + '-' + day;
+        return date;
+
+    } else {
+        day = day - 1;
+        date = year + '-' + month + '-' + day;
+
+        return date;
+    }
+
+}
+
+function request(date) {
+    $.ajax({
+        type: "get",
+        url: "http://localhost:1337/news?date=" + date,
+        success: function(msg) {
+            //console.log(msg)
+            $(".container").append(msg);
+
+            window.onscroll = function() {
+                if (getScrollTop() + getWindowHeight() >= getScrollHeight() - 300) {　　　
+                    //alert("you are in the bottom!");
+                    //只能一次发起一次ajax请求　
+                    window.onscroll = null;
+                    date = getYesterday(date);
+                    request(date);
+
+                }
+            };
+        }
+    });
+}
+
+
+$.ajax({
+    type: "get",
+    url: "http://localhost:1337/news?date=" + date,
+    success: function(msg) {
+        //console.log(msg)
+        $(".container").append(msg);
+        $(".loadmore").css("display", "block");
+    }
+});
+
+
+
+//返回顶部
+$(".returnTop").click(function() {
+    $("body").animate({
+        scrollTop: 0
+    });
+})
+
+$(window).scroll(function() {
+    var sHeight = $(document).scrollTop();
+    var vHeigtht = $(window).height();
+    if (sHeight > vHeigtht) {
+        $(".returnTop").css("display", "block")
+    } else {
+        $(".returnTop").css("display", "none")
+    }
+})
+
+function getScrollTop() {　　
+    var scrollTop = 0,
+        bodyScrollTop = 0,
+        documentScrollTop = 0;　　
+    if (document.body) {　　　　
+        bodyScrollTop = document.body.scrollTop;　　
+    }　　
+    if (document.documentElement) {　　　　
+        documentScrollTop = document.documentElement.scrollTop;　　
+    }　　
+    scrollTop = (bodyScrollTop - documentScrollTop > 0) ? bodyScrollTop : documentScrollTop;　　
+    return scrollTop;
+}
+//文档的总高度
+function getScrollHeight() {　　
+    var scrollHeight = 0,
+        bodyScrollHeight = 0,
+        documentScrollHeight = 0;　　
+    if (document.body) {　　　　
+        bodyScrollHeight = document.body.scrollHeight;　　
+    }　　
+    if (document.documentElement) {　　　　
+        documentScrollHeight = document.documentElement.scrollHeight;　　
+    }　　
+    scrollHeight = (bodyScrollHeight - documentScrollHeight > 0) ? bodyScrollHeight : documentScrollHeight;　　
+    return scrollHeight;
+}
+//浏览器视口的高度
+function getWindowHeight() {　
+    var windowHeight = 0;　　
+    if (document.compatMode == "CSS1Compat") {　　　　
+        windowHeight = document.documentElement.clientHeight;　　
+    } else {　　　　
+        windowHeight = document.body.clientHeight;　　
+    }　　
+    return windowHeight;
+}
+window.onscroll = function() {　　
+    //console.log(getScrollHeight(), getScrollTop())
+    if (getScrollTop() + getWindowHeight() >= getScrollHeight() - 300) {　　　　
+        //alert("you are in the bottom!");
+        //只能一次发起一次ajax请求　
+        window.onscroll = null;
+        date = getYesterday(date);
+        request(date);
+
+    }
+};
 </script>
+
 </html>

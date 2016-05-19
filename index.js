@@ -8,8 +8,8 @@ var app=express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/news',function(req,res){
-	console.log(req.url)
-	request('http://toutiao.io/prev/2016-05-19', function (error, response, body) {
+	date=req.query.date;
+	request('http://toutiao.io/prev/'+date, function (error, response, body) {
 		res.setHeader("Content-Type", "text/html");
      	res.end(body)
 	})
