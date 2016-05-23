@@ -118,7 +118,6 @@ xhr.setRequestHeader("X-Request-With", "XMLHttpRequest");
 xhr.send();
 
 
-
 //获取滚动条的高度
 function getScrollTop() {　　
     var scrollTop = 0,
