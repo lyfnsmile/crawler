@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>玄界之门</title>
+	<link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/twitter-bootstrap/3.3.0/css/bootstrap.min.css">
+	<style type="text/css">
+		
+		#title{
+			text-align: center;
+			padding: 20px 0;
+		}
+		#content{
+			width: 60%;
+			margin: 12px auto;
+			overflow: hidden;
+		}
+		.container-fluid {
+        padding: 0 20%;
+    }
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="./">
+			       开发者头条
+			    </a>
+                <a class="navbar-brand" href="./novel.html">
+                   玄界之门
+                </a>
+            </div>
+        </div>
+    </nav>
+	<h3 id="title" style="margin-top: 48px;"></h3>
+	<div id="content"></div>
+</body>
+<script type="text/javascript">
+var search=window.location.search;
+var query=search.split("=")[1];
+
+console.log(query)
+var obj={"query":query};
+obj=JSON.stringify(obj);
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() { //先绑定事件后再open
+    if (this.readyState === 4 && this.status === 200) {
+        var title = document.getElementById('title');
+        var content = document.getElementById('content');
+        var data=JSON.parse(xhr.responseText);
+        title.innerHTML=data.title;
+        var aa=data.content.replace(/\&nbsp;/g,"");
+        console.log(aa)
+        content.innerHTML=aa;
+    }
+
+};
+xhr.open("post", "http://localhost:1337/details", true);
+
+//设置请求头的相关参数
+xhr.setRequestHeader("Content-Type","application/json");
+xhr.send(obj);
+
+
+
+</script>
+</html>

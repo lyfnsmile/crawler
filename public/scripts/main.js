@@ -139,7 +139,7 @@ function getScrollHeight() {　　
         documentScrollHeight = 0;　　
     if (document.body) {　　　　
         bodyScrollHeight = document.body.scrollHeight;　　
-    } 
+    }
     if (document.documentElement) {　　　　
         documentScrollHeight = document.documentElement.scrollHeight;　　
     }　　
@@ -175,3 +175,5 @@ returnTop.addEventListener('click', function() {
     //返回顶部做成一个动画的效果
     backTop()
 }, false)
+
+
