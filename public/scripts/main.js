@@ -99,6 +99,8 @@ function request(data) {
 var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() { //先绑定事件后再open
     if (this.readyState === 4 && this.status === 200) {
+        var mask = document.getElementById('mask');
+        mask.style.display = "none";
         //var div=document.createElement('div');
         var daily = document.getElementById('daily');
         var div = document.createElement('div');

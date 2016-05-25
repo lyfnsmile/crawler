@@ -40,6 +40,17 @@
 .container-fluid{
 	padding: 0 20%;
 }
+#mask{
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99;
+        background-image: url("./images/loading.gif");
+        background-repeat: no-repeat;
+        background-position: 50% 160px;
+    }
 </style>
 
 <body>
@@ -58,6 +69,7 @@
     <div class="container" id="daily" style="margin-top: 48px;"></div>
     <div class="loadmore">正在加载中...</div>
     <div class="returnTop" title="返回顶部" style="right:200px;"></div>
+    <div id="mask"></div>
 </body>
 	<script type="text/javascript" src='./scripts/main.js'></script>
 </html>
