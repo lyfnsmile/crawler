@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>推酷科技</title>
+    <link rel="stylesheet" type="text/css" href="http://asset.tuicool.com/assets/application-2cfd59154d46613c0d5f82142c1f6aa1.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/twitter-bootstrap/3.3.0/css/bootstrap.min.css">
+    <style type="text/css">
+    .navbar-header {
+        width: 100%;
+    }
+    
+    .loadmore {
+        display: inline-block;
+        width: 70%;
+        background: #eee;
+        padding: 5px 12px;
+        text-align: center;
+        margin: 80px 20% 0px;
+        letter-spacing: 3px;
+        color: #666;
+        display: none;
+    }
+    
+    .returnTop {
+        display: none;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 12px;
+        text-align: center;
+        color: #fff;
+        font-weight: bold;
+        position: fixed;
+        right: 50px;
+        bottom: 50px;
+        background: url("http://static1.tuicool.com/images/return_bg.png") no-repeat 0 -50px;
+    }
+    
+    .container-fluid {
+        padding: 0 15%;
+    }
+    
+    #mask {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99;
+        background-image: url("../images/loading.gif");
+        background-repeat: no-repeat;
+        background-position: 50% 160px;
+    }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top custom">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="./">
+			       开发者头条
+			    </a>
+                <a class="navbar-brand" href="./tuiku">
+                   推酷科技
+                </a>
+                <a class="navbar-brand" href="./novel.html">
+                   玄界之门
+                </a>
+            </div>
+        </div>
+    </nav>
+    <ul id="list" style="margin-top: 48px;"></ul>
+    <div id="mask"></div>
+</body>
+<script type="text/javascript">
+var container = document.getElementById('list');
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function() { //先绑定事件后再open
+    if (this.readyState === 4 && this.status === 200) {
+        var mask = document.getElementById('mask');
+        mask.style.display = "none";
+        
+        //console.log(xhr.responseText.list)
+        var result = JSON.parse(xhr.responseText);
+        console.log(result.list)
+        container.innerHTML = result.list;
+
+    }
+
+};
+
+xhr.open("get", "http://localhost:1337/tkkj", true);
+
+//设置请求头的相关参数
+xhr.setRequestHeader("X-Request-With", "XMLHttpRequest");
+xhr.send();
+</script>
+
+</html>

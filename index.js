@@ -22,24 +22,38 @@ app.get('/lizx', function(req, res) {
         //var result=body.toString();
         var $ = cheerio.load(body);
         var array = [];
-        var link = $("#list").html();
+        var list = $("#list").html();
         res.json({
-            "list": link
+            "list": list
         });
     })
 });
 
 app.post('/details', function(req, res) {
     var link = req.body.query;
-    console.log(req.body.query)
     request('http://www.lindiankanshu.com'+link, function(error, response, body) {
         var obj = {};
         var $ = cheerio.load(body);
-        obj['title'] = $('.bookname h1').text();
+        obj['title'] = $('.bookname h1').html();
         obj['content'] = $("#content").html();
         res.json(obj);
     })
 });
+
+app.get('/tkkj', function(req, res) {
+    var link = req.body.query;
+    request('http://www.tuicool.com/ah/20?lang=1', function(error, response, body) {
+        
+        var obj = {};
+        var $ = cheerio.load(body);
+        var list = $("#list_article").html();
+       console.log(list)
+        res.json({
+            "list": list
+        });
+    })
+});
+
 
 
 app.listen(1337, '127.0.0.1');
