@@ -4,11 +4,14 @@ var bodyParser = require("body-parser");
 var path = require('path');
 var cheerio = require('cheerio');
 var fs = require('fs');
-
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
 
 var app = express();
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/news', function(req, res) {
@@ -56,5 +59,18 @@ app.get('/tkkj', function(req, res) {
     })
 });
 
+ app.post("/fileupload", function (req,res) {
+     var file=req.files;
+     console.log(file,req.body)
+     fs.readFile(file.path, function (err,data) {
+         if(err) res.send("读文件操作失败");
+         else{
+             fs.writeFile(file.name,data, function (err) {
+                 if(err) res.send("写文件操作失败.");
+                 else res.send("文件上传成功");
+             })
+         }
+     });
+ });
 
 app.listen(1337, '127.0.0.1');
